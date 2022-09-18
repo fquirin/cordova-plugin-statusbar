@@ -224,8 +224,11 @@ public class StatusBar extends CordovaPlugin {
                 window.clearFlags(0x04000000); // SDK 19: WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
                 window.addFlags(0x80000000); // SDK 21: WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
                 try {
+                    // Set background to take safe areas/insets/display cutouts into account
+                    int col = Color.parseColor(colorPref);
+                    window.setBackgroundDrawable(new ColorDrawable(col));
                     // Using reflection makes sure any 5.0+ device will work without having to compile with SDK level 21
-                    window.getClass().getMethod("setStatusBarColor", int.class).invoke(window, Color.parseColor(colorPref));
+                    window.getClass().getMethod("setStatusBarColor", int.class).invoke(window, col);
                 } catch (IllegalArgumentException ignore) {
                     LOG.e(TAG, "Invalid hexString argument, use f.i. '#999999'");
                 } catch (Exception ignore) {
